@@ -16,8 +16,9 @@
 		<feature>javaee-7.0</feature>
 	</featureManager>
 
-	<application id="daytrader7" location="daytrader-ee7-1.0-SNAPSHOT.ear"
-		name="daytrader7" />
+	<application id="daytrader7" location="daytrader-ee7.ear"
+		name="daytrader7" >
+	</application>
 
 	<!-- allow reuse of 'busy' ports for fast server recycling on linux (where 
 		ports remain blocked for up to 2 mins after server stops) ${tradelite.http.port} 
@@ -43,6 +44,9 @@
 	<fileset dir="${server.config.dir}/lib" id="DerbyFileset" 
 		includes="derby.jar"/>
 
+    <library filesetRef="RabbitFileset" id="global" />
+	<fileset dir="${server.config.dir}/lib" id="RabbitFileset" 
+		includes="amqp-client*.jar,slf4j*.jar"/>
 	<authData id="TradeDataSourceAuthData" password="db_password"
 		user="db_username" />
 	<authData id="TradeAdminAuthData" password="db_password" user="db_username" />
@@ -51,7 +55,7 @@
 		isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded"
 		jndiName="jdbc/TradeDataSource" statementCacheSize="60">
 		<properties.derby.embedded createDatabase="create"
-			databaseName="data/tradedb" password="db_password"
+			databaseName="${derby.db.location}/tradedb" password="db_password"
 			user="db_username" />
 	</dataSource>
 

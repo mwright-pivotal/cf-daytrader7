@@ -443,4 +443,5 @@
         </method-permission> 
 
     </assembly-descriptor>
+    <ejb-client-jar>daytrader-ee7-ejbClient.jar</ejb-client-jar>
 </ejb-jar>

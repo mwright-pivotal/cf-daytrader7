@@ -36,11 +36,12 @@ public class TradeConfig {
     public static final int DIRECT = 1;
     public static int runTimeMode = EJB3;
 
-    public static String[] orderProcessingModeNames = { "Sync", "Async_2-Phase", "Async_ManagedThread" };
+    public static String[] orderProcessingModeNames = { "Sync", "Async_2-Phase", "Async_ManagedThread", "Async_RabbitMQ" };
     public static final int SYNCH = 0;
     public static final int ASYNCH_2PHASE = 1;
     public static final int ASYNCH_MANAGEDTHREAD = 2;
-    public static int orderProcessingMode = SYNCH;
+    public static final int ASYNCH_RMQ = 3;
+    public static int orderProcessingMode = ASYNCH_RMQ;
 
     public static String[] accessModeNames = { "Standard", "WebServices" };
     public static final int STANDARD = 0;

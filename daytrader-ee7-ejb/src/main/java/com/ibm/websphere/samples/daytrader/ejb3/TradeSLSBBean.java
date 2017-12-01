@@ -15,12 +15,17 @@
  */
 package com.ibm.websphere.samples.daytrader.ejb3;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -232,7 +237,25 @@ public class TradeSLSBBean implements TradeSLSBRemote, TradeSLSBLocal {
             
             thread.start();
         
-        } else {
+        } else if (TradeConfig.getOrderProcessingMode() == TradeConfig.ASYNCH_RMQ) {
+			Map<String, String> message = new HashMap<String, String>();
+
+			message.put("command", "neworder");
+			message.put("orderID", orderID.toString());
+			message.put("twoPhase", Boolean.toString(twoPhase));
+			message.put("direct", Boolean.toString(true));
+			message.put("publishTime", Long.toString(System.currentTimeMillis()));
+			message.put("data", "neworder: orderID=" + orderID + " runtimeMode=Direct twoPhase=" + twoPhase);
+			DTOrderSendRmq sender;
+			try {
+				sender = new DTOrderSendRmq("orders");
+				sender.sendMessage((Serializable) message);
+			} catch (IOException | TimeoutException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
+		} else {
         
             try (JMSContext queueContext = queueConnectionFactory.createContext();) {
                 TextMessage message = queueContext.createTextMessage();
