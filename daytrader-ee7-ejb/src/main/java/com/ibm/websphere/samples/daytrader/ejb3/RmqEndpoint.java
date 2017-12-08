@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.jms.TextMessage;
+
+import org.springframework.beans.factory.annotation.Value;
 
 import com.ibm.websphere.samples.daytrader.util.Log;
-import com.ibm.websphere.samples.daytrader.util.Property;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -21,16 +20,13 @@ public abstract class RmqEndpoint {
     /**
      * Expecting cloud.services.<service-name>.connection.<property> when PCF
      */
-    @Inject
-    @Property("cloud.services.broker-messaging.connection.host")
+    @Value("cloud.services.broker-messaging.connection.host")
     private String rabbitHost;
     
-    @Inject
-    @Property("cloud.services.broker-messaging.connection.username")
+    @Value("cloud.services.broker-messaging.connection.username")
     private String rabbitUser;
     
-    @Inject
-    @Property("cloud.services.broker-messaging.connection.password")
+    @Value("cloud.services.broker-messaging.connection.password")
     private String rabbitPassword;
 	
     public RmqEndpoint(String endpointName) {

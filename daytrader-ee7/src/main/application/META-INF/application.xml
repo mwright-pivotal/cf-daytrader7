@@ -5,10 +5,8 @@
   <module>
     <web>
       <web-uri>daytrader-ee7-web.war</web-uri>
-      <context-root>/daytrader-ee7-web</context-root>
+      <context-root>/daytrader</context-root>
     </web>
   </module>
-  <module>
-  	<ejb>lib/daytrader-ee7-ejb.jar</ejb>
-  </module>
+  <module><ejb>daytrader-ee7-ejb.jar</ejb></module>
 </application>
