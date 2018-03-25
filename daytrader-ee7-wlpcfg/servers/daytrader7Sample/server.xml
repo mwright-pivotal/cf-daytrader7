@@ -16,122 +16,103 @@
 		<feature>javaee-7.0</feature>
 	</featureManager>
 
-	<application id="daytrader7" location="daytrader-ee7.ear"
-		name="daytrader7" >
+	<application id="daytrader7" location="daytrader-ee7.ear" name="daytrader7">
 	</application>
 
 	<!-- allow reuse of 'busy' ports for fast server recycling on linux (where 
 		ports remain blocked for up to 2 mins after server stops) ${tradelite.http.port} 
 		set in bootstrap.properties -->
-	<httpEndpoint host="*" httpPort="9082" httpsPort="9443"
-		id="defaultHttpEndpoint">
-		<tcpOptions soReuseAddr="true" />
-		<httpOptions maxKeepAliveRequests="-1" />
+	<httpEndpoint host="*" httpPort="9082" httpsPort="9443" id="defaultHttpEndpoint">
+		<tcpOptions soReuseAddr="true"/>
+		<httpOptions maxKeepAliveRequests="-1"/>
 	</httpEndpoint>
 
-	<iiopEndpoint id="defaultIiopEndpoint" iiopPort="2809"
-		iiopsPort="2810">
-		<iiopsOptions iiopsPort="2810" id="iiopsConfig" sslRef="defaultSSLSettings"
-			suppressHandshakeErrors="true"></iiopsOptions>
+	<iiopEndpoint id="defaultIiopEndpoint" iiopPort="2809" iiopsPort="2810">
+		<iiopsOptions id="iiopsConfig" iiopsPort="2810" sslRef="defaultSSLSettings" suppressHandshakeErrors="true"/>
 	</iiopEndpoint>
 
-	<connectionManager agedTimeout="-1"
-		connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100"
-		minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1" />
+	<connectionManager agedTimeout="-1" connectionTimeout="0" id="conMgr1" maxIdleTime="-1" maxPoolSize="100" minPoolSize="100" purgePolicy="FailingConnectionOnly" reapTime="-1"/>
 
-	<jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
-	<library filesetRef="DerbyFileset" id="DerbyLib" />
-	<fileset dir="${server.config.dir}/lib" id="DerbyFileset" 
-		includes="derby.jar"/>
+	<jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+	<library filesetRef="DerbyFileset" id="DerbyLib"/>
+	<fileset dir="${server.config.dir}/lib" id="DerbyFileset" includes="derby.jar"/>
 
-    <library filesetRef="RabbitFileset" id="global" />
-	<fileset dir="${server.config.dir}/lib" id="RabbitFileset" 
-		includes="amqp-client*.jar,slf4j*.jar"/>
-	<authData id="TradeDataSourceAuthData" password="db_password"
-		user="db_username" />
-	<authData id="TradeAdminAuthData" password="db_password" user="db_username" />
+    <library filesetRef="RabbitFileset" id="global"/>
+	<fileset dir="${server.config.dir}/lib" id="RabbitFileset" includes="amqp-client*.jar,slf4j*.jar"/>
+	<authData id="TradeDataSourceAuthData" password="db_password" user="db_username"/>
+	<authData id="TradeAdminAuthData" password="db_password" user="db_username"/>
 
-	<dataSource connectionManagerRef="conMgr1" id="DefaultDataSource"
-		isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded"
-		jndiName="jdbc/TradeDataSource" statementCacheSize="60">
-		<properties.derby.embedded createDatabase="create"
-			databaseName="${derby.db.location}/tradedb" password="db_password"
-			user="db_username" />
+	<dataSource connectionManagerRef="conMgr1" id="DefaultDataSource" isolationLevel="TRANSACTION_READ_COMMITTED" jdbcDriverRef="DerbyEmbedded" jndiName="jdbc/TradeDataSource" statementCacheSize="60">
+		<properties.derby.embedded createDatabase="create" databaseName="tradedb" password="db_password" user="db_username"/>
 	</dataSource>
 
 	<messagingEngine id="defaultME">
-		<queue id="TradeBrokerQueue" />
-		<topicSpace id="TradeTopicSpace" />
+		<queue id="TradeBrokerQueue"/>
+		<topicSpace id="TradeTopicSpace"/>
 	</messagingEngine>
 
-	<jmsQueueConnectionFactory
-		connectionManagerRef="ConMgr3" jndiName="jms/TradeBrokerQCF">
-		<properties.wasJms />
+	<jmsQueueConnectionFactory connectionManagerRef="ConMgr3" jndiName="jms/TradeBrokerQCF">
+		<properties.wasJms/>
 	</jmsQueueConnectionFactory>
-	<connectionManager id="ConMgr3" maxPoolSize="20" />
+	<connectionManager id="ConMgr3" maxPoolSize="20"/>
 
-	<jmsTopicConnectionFactory
-		connectionManagerRef="ConMgr4" jndiName="jms/TradeStreamerTCF">
-		<properties.wasJms />
+	<jmsTopicConnectionFactory connectionManagerRef="ConMgr4" jndiName="jms/TradeStreamerTCF">
+		<properties.wasJms/>
 	</jmsTopicConnectionFactory>
-	<connectionManager id="ConMgr4" maxPoolSize="20" />
+	<connectionManager id="ConMgr4" maxPoolSize="20"/>
 
 	<jmsQueue id="jms/TradeBrokerQueue" jndiName="jms/TradeBrokerQueue">
-		<properties.wasJms deliveryMode="NonPersistent"
-			queueName="TradeBrokerQueue" />
+		<properties.wasJms deliveryMode="NonPersistent" queueName="TradeBrokerQueue"/>
 	</jmsQueue>
 
 	<jmsTopic id="TradeStreamerTopic" jndiName="jms/TradeStreamerTopic">
-		<properties.wasJms deliveryMode="NonPersistent"
-			topicSpace="TradeTopicSpace" />
+		<properties.wasJms deliveryMode="NonPersistent" topicSpace="TradeTopicSpace"/>
 	</jmsTopic>
 
 	<jmsActivationSpec id="eis/TradeBrokerMDB">
-		<properties.wasJms destinationRef="jms/TradeBrokerQueue" />
+		<properties.wasJms destinationRef="jms/TradeBrokerQueue"/>
 	</jmsActivationSpec>
 
 	<jmsActivationSpec id="eis/TradeStreamerMDB">
-		<properties.wasJms destinationRef="TradeStreamerTopic"
-			destinationType="javax.jms.Topic" />
+		<properties.wasJms destinationRef="TradeStreamerTopic" destinationType="javax.jms.Topic"/>
 	</jmsActivationSpec>
 
-	<applicationMonitor updateTrigger="mbean" />
+	<applicationMonitor updateTrigger="mbean"/>
 
-	<ssl clientAuthenticationSupported="true" id="defaultSSLSettings"
-		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
-	<keyStore id="defaultKeyStore" password="p1v0tal" />
-	<keyStore id="defaultTrustStore" password="p1v0tal" />
+	<ssl clientAuthenticationSupported="true" id="defaultSSLSettings" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore"/>
+	<keyStore id="defaultKeyStore" password="p1v0tal"/>
+	<keyStore id="defaultTrustStore" password="p1v0tal"/>
 
 
 	<basicRegistry id="basic" realm="customRealm">
-		<user name="mwright" password="p1v0tal" />
+		<user name="mwright" password="p1v0tal"/>
 		<group name="grp1">
-			<member name="mwright" />
+			<member name="mwright"/>
 		</group>
 		<group name="grp2">
-			<member name="mwright" />
+			<member name="mwright"/>
 		</group>
 		<group name="grp3">
-			<member name="mwright" />
+			<member name="mwright"/>
 		</group>
 	</basicRegistry>
 
 	<orb id="defaultOrb">
 		<serverPolicy.csiv2>
 			<layers>
-				<attributeLayer identityAssertionEnabled="false" />
-				<authenticationLayer establishTrustInClient="Required"
-					mechanisms="LTPA,GSSUP" />
-				<transportLayer sslRef="defaultSSLSettings" />
+				<attributeLayer identityAssertionEnabled="false"/>
+				<authenticationLayer establishTrustInClient="Required" mechanisms="LTPA,GSSUP"/>
+				<transportLayer sslRef="defaultSSLSettings"/>
 			</layers>
 		</serverPolicy.csiv2>
 		<clientPolicy.csiv2>
 			<layers>
-				<attributeLayer identityAssertionEnabled="false" />
-				<authenticationLayer establishTrustInClient="Supported"
-					mechanisms="LTPA,GSSUP" />
-				<transportLayer />
+				<attributeLayer identityAssertionEnabled="false"/>
+				<authenticationLayer establishTrustInClient="Supported" mechanisms="LTPA,GSSUP"/>
+				<transportLayer/>
 			</layers>
 		</clientPolicy.csiv2>
 	</orb>
+
+    <webApplication id="movieplex7" location="movieplex7-1.0-SNAPSHOT.war" name="movieplex7"/>
 </server>
