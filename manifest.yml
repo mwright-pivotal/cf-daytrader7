@@ -5,5 +5,5 @@ applications:
   buildpack: https://github.com/cloudfoundry/ibm-websphere-liberty-buildpack.git
   path: daytrader-ee7-wlpcfg/servers/daytrader7Sample
 env:
-  IBM_JVM_LICENSE: L-PMAA-A3Z8P2
-  IBM_LIBERTY_LICENSE: L-CTUR-AVDTCN
+  IBM_JVM_LICENSE:  L-SMKR-AVSEUH
+  IBM_LIBERTY_LICENSE: L-CTUR-AYBK6Z
